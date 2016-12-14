@@ -1,0 +1,20 @@
+{
+  "critics": {
+    "lint": {
+      "engine": "tslint"
+    }
+  },
+  "dependencies": {
+    "mute": [
+      "grunt",
+      "sqlite3"
+    ]
+  },
+  "ignore": [
+    "node_modules",
+    "test"
+  ],
+  "test": [
+    "**/test/unit/**"
+  ]
+}
