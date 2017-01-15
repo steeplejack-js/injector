@@ -27,8 +27,7 @@ before_deploy:
 
 deploy:
   provider: script
-  email: simon@simonemms.com
-  script: deploy.sh
+  script: ./deploy.sh
   skip_cleanup: true
   on:
     tags: true

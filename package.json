@@ -12,37 +12,34 @@
     "functions": 100,
     "branches": 100,
     "include": [
-      "**/*.ts"
-    ],
-    "exclude": [
-      "node_modules"
+      "src/*.js",
+      "src/**/*.js"
     ],
     "reporter": [
       "lcov",
       "text-summary"
     ],
-    "require": [],
+    "require": [
+      "babel-register"
+    ],
     "sourceMap": false,
     "instrument": false
   },
   "scripts": {
-    "clean": "rimraf *.js *.js.map *.d.ts {helpers,interfaces,lib,test/**/**/}/**/*.js {helpers,interfaces,lib,test/**/**/}/**/*.js.map {helpers,interfaces,lib,test/**/**/}/**/*.d.ts ./coverage ./tmp",
+    "clean": "rm -Rf ./build ./coverage",
     "ci": "npm test -s && npm run coverage -s && npm run compile -s",
-    "compile": "npm run clean -s && tsc",
-    "compile:all": "npm run clean -s && tsc --removeComments false --outDir ./tmp",
-    "coverage": "npm run compile:all -s && npm run coverage:report -s && npm run coverage:remap:html -s && npm run coverage:remap:json -s && npm run coverage:check -s",
-    "coverage:check": "istanbul check-coverage ./coverage/coverage.json --statements=100 --functions=100 --branches=100 --lines=100",
-    "coverage:remap:html": "remap-istanbul -i ./coverage/coverage.json -o ./coverage/lcov-report -t html",
-    "coverage:remap:json": "remap-istanbul -i ./coverage/coverage.json -o ./coverage/coverage.json",
-    "coverage:report": "istanbul cover _mocha ./tmp/test/unit/ -- --recursive ./tmp/test/unit",
+    "compile": "npm run clean && npm run compile:js -s && npm run copy",
+    "compile:js": "babel --source-maps=inline --out-dir ./build ./src",
+    "copy": "cp package.json build; cp LICENSE build; cp README.md build",
+    "coverage": "cross-env NODE_ENV=test nyc mocha --ui bdd --recursive test/unit",
     "postversion": "git push --tags && git push",
     "test": "npm run test:lint -s && npm run test:unit -s",
-    "test:lint": "tslint *.ts **/*.ts --exclude=*.d.ts --exclude=**/*.d.ts",
-    "test:unit": "npm run clean && mocha --compilers ts:ts-node/register --throw-deprecation --ui bdd --full-trace --recursive test/unit",
-    "watch:coverage": "nodemon --ext js,ts --exec 'npm run coverage -s' --legacy-watch",
-    "watch:test": "nodemon --ext js,ts --exec 'npm run test -s' --legacy-watch",
-    "watch:test:lint": "nodemon --ext js,ts --exec 'npm run test:lint -s' --legacy-watch",
-    "watch:test:unit": "nodemon --ext js,ts --exec 'npm run test:unit -s' --legacy-watch"
+    "test:lint": "eslint src",
+    "test:unit": "mocha --compilers js:babel-register --throw-deprecation --ui bdd --full-trace --recursive test/unit",
+    "watch:coverage": "nodemon --exec 'npm run coverage -s' --legacy-watch",
+    "watch:test": "nodemon --exec 'npm run test -s' --legacy-watch",
+    "watch:test:lint": "nodemon --exec 'npm run test:lint -s' --legacy-watch",
+    "watch:test:unit": "nodemon --exec 'npm run test:unit -s' --legacy-watch"
   },
   "repository": {
     "type": "git",
@@ -55,37 +52,7 @@
   },
   "homepage": "https://github.com/steeplejack-js/injector#readme",
   "dependencies": {
-    "@steeplejack/core": "0.0.2",
-    "lodash": "^4.17.2",
-    "node-uuid": "^1.4.7"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.0.36",
-    "@types/chai": "^3.4.34",
-    "@types/chai-as-promised": "0.0.29",
-    "@types/lodash": "^4.14.43",
-    "@types/mocha": "^2.2.33",
-    "@types/node": "^6.0.52",
-    "@types/node-uuid": "0.0.28",
-    "@types/proxyquire": "^1.3.27",
-    "@types/sinon": "^1.16.32",
-    "@types/sinon-chai": "^2.7.27",
-    "babel-cli": "^6.18.0",
-    "babel-preset-latest": "^6.16.0",
-    "bluebird": "^3.4.6",
-    "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
-    "istanbul": "^0.4.5",
-    "mocha": "^3.2.0",
-    "nodemon": "^1.11.0",
-    "proxyquire": "^1.7.10",
-    "remap-istanbul": "^0.8.0",
-    "rimraf": "^2.5.4",
-    "sinon": "^1.17.6",
-    "sinon-as-promised": "^4.0.2",
-    "sinon-chai": "^2.8.0",
-    "ts-node": "^1.7.2",
-    "tslint": "^4.0.2",
-    "typescript": "^2.1.4"
   }
 }
