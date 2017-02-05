@@ -34,7 +34,9 @@
     "coverage": "cross-env NODE_ENV=test nyc mocha --ui bdd --recursive test/unit",
     "postversion": "git push --tags && git push",
     "test": "npm run test:lint -s && npm run test:unit -s",
-    "test:lint": "eslint src",
+    "test:lint": "npm run test:lint:src -s && npm run test:lint:test",
+    "test:lint:src": "eslint src",
+    "test:lint:test": "eslint --env mocha --rule '{ global-require: 0, import/no-dynamic-require: 0, padded-blocks: 0, prefer-arrow-callback: 0, no-underscore-dangle: 0, func-names: 0, no-unused-expressions: 0, import/prefer-default-export: 0 }' test",
     "test:unit": "mocha --compilers js:babel-register --throw-deprecation --ui bdd --full-trace --recursive test/unit",
     "watch:coverage": "nodemon --exec 'npm run coverage -s' --legacy-watch",
     "watch:test": "nodemon --exec 'npm run test -s' --legacy-watch",
@@ -52,7 +54,27 @@
   },
   "homepage": "https://github.com/steeplejack-js/injector#readme",
   "dependencies": {
+    "@steeplejack/core": "^1.0.0",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-plugin-istanbul": "^3.1.2",
+    "babel-preset-env": "^1.1.8",
+    "babel-register": "^6.22.0",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "cross-env": "^3.1.4",
+    "eslint": "^3.15.0",
+    "eslint-config-airbnb": "^14.0.0",
+    "eslint-plugin-classes": "^0.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^3.0.2",
+    "eslint-plugin-react": "^6.9.0",
+    "mocha": "^3.2.0",
+    "nyc": "^10.1.2",
+    "sinon": "^1.17.7",
+    "sinon-as-promised": "^4.0.2",
+    "sinon-chai": "^2.8.0"
   }
 }
