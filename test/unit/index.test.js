@@ -241,7 +241,7 @@ describe('Injector library', function () {
           let fail = false;
           try {
             this.obj.process(target, [
-              'factoryDep'
+              'factoryDep',
             ]);
           } catch (err) {
             fail = true;
@@ -342,7 +342,7 @@ describe('Injector library', function () {
         it('should get a constructor dependency', function () {
 
           class Target {
-            constructor(topLevel) {
+            constructor (topLevel) {
               this.exec = topLevel;
             }
           }
@@ -434,7 +434,7 @@ describe('Injector library', function () {
           let fail = false;
           try {
             this.obj.process(Target, [
-              'factoryDep'
+              'factoryDep',
             ]);
           } catch (err) {
             fail = true;
@@ -489,12 +489,12 @@ describe('Injector library', function () {
       beforeEach(function () {
 
         this.registers = {
-          factory: () => {}
+          factory: () => {},
         };
 
         const Injector2 = proxyquire('../../src/index', {
           '/path/to/error/noName': {
-            default: this.registers.factory
+            default: this.registers.factory,
           },
           '/path/to/factoryPath': {
             hello: this.registers.factory,
@@ -504,31 +504,31 @@ describe('Injector library', function () {
                 'dep2',
               ],
               export: 'hello',
-              name: 'factoryPathDefault'
-            }
+              name: 'factoryPathDefault',
+            },
           },
           '/path/to/factoryPathDefault': {
             default: this.registers.factory,
             inject: {
-              name: 'factoryPathDefault'
-            }
+              name: 'factoryPathDefault',
+            },
           },
           '/path/to/factoryPathDefaultDeps': {
             default: this.registers.factory,
             inject: {
               deps: [
-                'dep1'
+                'dep1',
               ],
-              name: 'factoryPathDefault'
-            }
+              name: 'factoryPathDefault',
+            },
           },
           '/path/to/instancePathDefault': {
             default: 'someInstance',
             inject: {
               name: 'instancePathDefault',
-              type: 'instance'
-            }
-          }
+              type: 'instance',
+            },
+          },
         });
 
         this.obj = new Injector2();
@@ -561,7 +561,7 @@ describe('Injector library', function () {
 
         try {
           this.obj.register({
-            default: this.registers.factory
+            default: this.registers.factory,
           });
         } catch (err) {
           fail = true;
@@ -579,8 +579,8 @@ describe('Injector library', function () {
         expect(this.obj.register({
           default: this.registers.factory,
           inject: {
-            name: 'factoryPathDefault'
-          }
+            name: 'factoryPathDefault',
+          },
         })).to.be.equal('registered');
 
         expect(this.registerComponent).to.be.calledOnce
@@ -589,7 +589,7 @@ describe('Injector library', function () {
             factory: this.registers.factory,
             instance: undefined,
             name: 'factoryPathDefault',
-            path: undefined
+            path: undefined,
           });
 
       });
@@ -604,7 +604,7 @@ describe('Injector library', function () {
             factory: this.registers.factory,
             instance: undefined,
             name: 'factoryPathDefault',
-            path: '/path/to/factoryPathDefault'
+            path: '/path/to/factoryPathDefault',
           });
 
       });
@@ -615,8 +615,8 @@ describe('Injector library', function () {
           default: 'someInstance',
           inject: {
             name: 'instancePathDefault',
-            type: 'instance'
-          }
+            type: 'instance',
+          },
         })).to.be.equal('registered');
 
         expect(this.registerComponent).to.be.calledOnce
@@ -625,7 +625,7 @@ describe('Injector library', function () {
             factory: undefined,
             instance: 'someInstance',
             name: 'instancePathDefault',
-            path: undefined
+            path: undefined,
           });
 
       });
@@ -640,7 +640,7 @@ describe('Injector library', function () {
             factory: undefined,
             instance: 'someInstance',
             name: 'instancePathDefault',
-            path: '/path/to/instancePathDefault'
+            path: '/path/to/instancePathDefault',
           });
 
       });
@@ -658,7 +658,7 @@ describe('Injector library', function () {
             factory: this.registers.factory,
             instance: undefined,
             name: 'factoryPathDefault',
-            path: '/path/to/factoryPath'
+            path: '/path/to/factoryPath',
           });
       });
 
@@ -671,19 +671,19 @@ describe('Injector library', function () {
             deps: [
               'dep1',
             ],
-            name: 'factoryPath'
-          }
+            name: 'factoryPath',
+          },
         })).to.be.equal('registered');
 
         expect(this.registerComponent).to.be.calledOnce
           .calledWithExactly({
             deps: [
-              'dep1'
+              'dep1',
             ],
             factory: this.registers.factory,
             instance: undefined,
             name: 'factoryPath',
-            path: undefined
+            path: undefined,
           });
 
       });
@@ -751,7 +751,7 @@ describe('Injector library', function () {
 
         expect(this.obj.components.factoryDep).to.be.eql({
           deps: [
-            'instancePath'
+            'instancePath',
           ],
           factory: factoryDep,
           instance: undefined,
@@ -796,7 +796,7 @@ describe('Injector library', function () {
           try {
             this.obj.registerComponent({
               factory: () => {
-              }
+              },
             });
           } catch (err) {
             fail = true;
@@ -893,17 +893,17 @@ describe('Injector library', function () {
             false,
             function () {},
             {},
-            'string'
+            'string',
           ];
 
-          types.forEach(deps => {
+          types.forEach((deps) => {
             let fail = false;
             try {
               this.obj.registerComponent({
                 deps,
                 name: 'bothRegistered',
                 factory: () => {
-                }
+                },
               });
             } catch (err) {
               fail = true;
@@ -928,7 +928,7 @@ describe('Injector library', function () {
             this.obj.registerComponent({
               factory: () => {
               },
-              path: '/path/to/file'
+              path: '/path/to/file',
             });
           } catch (err) {
             fail = true;
@@ -947,7 +947,7 @@ describe('Injector library', function () {
           try {
             this.obj.registerComponent({
               name: 'instancePathFactory',
-              path: '/path/to/file'
+              path: '/path/to/file',
             });
           } catch (err) {
             fail = true;
@@ -1029,10 +1029,10 @@ describe('Injector library', function () {
             false,
             function () {},
             {},
-            'string'
+            'string',
           ];
 
-          types.forEach(deps => {
+          types.forEach((deps) => {
             let fail = false;
             try {
               this.obj.registerComponent({
