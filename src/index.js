@@ -131,8 +131,25 @@ class Injector extends Base {
 
     const exportable = inject.export || 'default';
     const type = inject.type || 'factory';
-    const deps = inject.deps;
+    let deps = inject.deps;
     const injectable = module[exportable];
+
+    if (deps) {
+      deps = deps.map((dep) => {
+        /* Anything starting 'npm:' is automatically included */
+        if (/^npm:/.test(dep) && !this.getComponent(dep)) {
+          const npmModule = dep.substr(4);
+
+          this.registerComponent({
+            // eslint-disable-next-line import/no-dynamic-require, global-require
+            factory: () => require(npmModule),
+            name: dep,
+          });
+        }
+
+        return dep;
+      });
+    }
 
     return this.registerComponent({
       deps,
