@@ -24,6 +24,9 @@ script:
 - npm run ci
 - npm run compile
 
+before_deploy:
+- cd build
+
 deploy:
   provider: npm
   email: simon@simonemms.com
