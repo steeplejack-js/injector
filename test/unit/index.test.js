@@ -5,7 +5,7 @@
 /* Node modules */
 
 /* Third-party modules */
-import { Base } from '@steeplejack/core';
+import steeplejackCore, { Base } from '@steeplejack/core';
 
 /* Files */
 import { expect, proxyquire, sinon } from '../../test/helpers/configure';
@@ -128,6 +128,21 @@ describe('Injector library', function () {
           expect(objTarget).to.be.instanceof(target);
 
           expect(objTarget.exec()).to.be.equal('instancePathFactory');
+
+        });
+
+        it('should process a dep starting npm: as an npm module', function () {
+
+          const target = function (topLevel) {
+            this.exec = topLevel;
+          };
+
+          const objTarget = this.obj.process(target, [
+            'npm:@steeplejack/core',
+          ]);
+          expect(objTarget).to.be.instanceof(target);
+
+          expect(objTarget.exec).to.be.equal(steeplejackCore);
 
         });
 
@@ -493,9 +508,6 @@ describe('Injector library', function () {
         };
 
         const Injector2 = proxyquire('../../src/index', {
-          npmDynamicDep: {
-            npmDynamicDep: true,
-          },
           '/path/to/error/noName': {
             default: this.registers.factory,
           },
@@ -690,48 +702,6 @@ describe('Injector library', function () {
             name: 'factoryPath',
             path: undefined,
           });
-
-      });
-
-      it('should automatically require a dependency starting `npm:`', function () {
-
-        expect(this.obj.register({
-          default: this.registers.factory,
-          inject: {
-            name: 'factoryPathDefault',
-            deps: [
-              'npm:npmDynamicDep',
-            ],
-          },
-        })).to.be.equal('registered');
-
-        expect(this.getComponent).to.be.calledOnce
-          .calledWithExactly('npm:npmDynamicDep');
-
-        expect(this.registerComponent).to.be.calledTwice
-          .calledWithExactly({
-            deps: [
-              'npm:npmDynamicDep',
-            ],
-            factory: this.registers.factory,
-            instance: undefined,
-            name: 'factoryPathDefault',
-            path: undefined,
-          });
-
-        const args = this.registerComponent.args;
-
-        expect(args[0]).to.have.length(1);
-        expect(args[0][0]).to.have.keys([
-          'name',
-          'factory',
-        ]);
-
-        expect(args[0][0].name).to.be.equal('npm:npmDynamicDep');
-        expect(args[0][0].factory).to.be.a('function');
-        expect(args[0][0].factory()).to.be.eql({
-          npmDynamicDep: true,
-        });
 
       });
 

@@ -42,10 +42,23 @@ function construct (constructor, args) {
  */
 function getDependencies (injector, dependencies) {
   return dependencies.map((name) => {
-    const dependency = injector.getComponent(name);
+    let dependency = injector.getComponent(name);
 
     if (!dependency) {
-      throw new Error(`Missing dependency: ${name}`);
+      /* Anything starting 'npm:' is automatically included */
+      if (/^npm:/.test(name)) {
+        const npmModule = name.substr(4);
+
+        injector.registerComponent({
+          // eslint-disable-next-line import/no-dynamic-require, global-require
+          factory: () => require(npmModule),
+          name,
+        });
+
+        dependency = injector.getComponent(name);
+      } else {
+        throw new Error(`Missing dependency: ${name}`);
+      }
     }
 
     /* If instance hasn't already been processed, process it */
@@ -131,25 +144,8 @@ class Injector extends Base {
 
     const exportable = inject.export || 'default';
     const type = inject.type || 'factory';
-    let deps = inject.deps;
+    const deps = inject.deps;
     const injectable = module[exportable];
-
-    if (deps) {
-      deps = deps.map((dep) => {
-        /* Anything starting 'npm:' is automatically included */
-        if (/^npm:/.test(dep) && !this.getComponent(dep)) {
-          const npmModule = dep.substr(4);
-
-          this.registerComponent({
-            // eslint-disable-next-line import/no-dynamic-require, global-require
-            factory: () => require(npmModule),
-            name: dep,
-          });
-        }
-
-        return dep;
-      });
-    }
 
     return this.registerComponent({
       deps,
